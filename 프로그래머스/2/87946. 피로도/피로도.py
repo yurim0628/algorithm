@@ -2,7 +2,7 @@ from itertools import permutations
 
 def solution(k, dungeons):
     answer = 0
-    for dungeons in permutations(dungeons, len(dungeons)):
+    for dungeons in permutations(dungeons):
         fatigue, count = k, 0
         for dungeon in dungeons:
             if fatigue >= dungeon[0]:
