@@ -74,7 +74,6 @@ for _ in range(M):
     if dist == -1 or F < dist:
         F = -1
         break
-        
     F += dist
     cx, cy = ex, ey
 
