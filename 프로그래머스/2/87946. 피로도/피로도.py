@@ -1,12 +1,16 @@
-from itertools import permutations
-
 def solution(k, dungeons):
     answer = 0
-    for dungeons in permutations(dungeons):
-        fatigue, count = k, 0
-        for dungeon in dungeons:
-            if fatigue >= dungeon[0]:
-                fatigue -= dungeon[1]
-                count += 1
+    visited = [False] * len(dungeons)
+     
+    def dfs(k, count):
+        nonlocal answer  
         answer = max(answer, count)
+            
+        for i, dungeon in enumerate(dungeons):
+            if not visited[i] and k >= dungeon[0]:
+                visited[i] = True
+                dfs(k - dungeon[1], count + 1)
+                visited[i] = False
+    
+    dfs(k, 0)
     return answer
