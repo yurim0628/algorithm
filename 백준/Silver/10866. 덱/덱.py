@@ -4,40 +4,25 @@ import sys
 input = sys.stdin.read
 data = input().splitlines()
 
-n = int(data[0])
-dq = deque()
+answer = deque()  # 덱 초기화
+result = []  # 결과 저장 리스트
 
-result = []
-for i in range(1, n + 1):
-    command = data[i].split()
-    
-    if command[0] == "push_front":
-        dq.appendleft(int(command[1]))
-    elif command[0] == "push_back":
-        dq.append(int(command[1]))
-    elif command[0] == "pop_front":
-        if dq:
-            result.append(dq.popleft())
-        else:
-            result.append(-1)
-    elif command[0] == "pop_back":
-        if dq:
-            result.append(dq.pop())
-        else:
-            result.append(-1)
-    elif command[0] == "size":
-        result.append(len(dq))
-    elif command[0] == "empty":
-        result.append(1 if not dq else 0)
-    elif command[0] == "front":
-        if dq:
-            result.append(dq[0])
-        else:
-            result.append(-1)
-    elif command[0] == "back":
-        if dq:
-            result.append(dq[-1])
-        else:
-            result.append(-1)
+for command in data[1:]:
+    if "push_front" in command:
+        answer.appendleft(command.split()[1])
+    elif "push_back" in command:
+        answer.append(command.split()[1])
+    elif command == "pop_front":
+        result.append(answer.popleft() if answer else -1)
+    elif command == "pop_back":
+        result.append(answer.pop() if answer else -1)
+    elif command == "size":
+        result.append(len(answer))
+    elif command == "empty":
+        result.append(0 if answer else 1)
+    elif command == "front":
+        result.append(answer[0] if answer else -1)
+    elif command == "back":
+        result.append(answer[-1] if answer else -1)
 
 sys.stdout.write("\n".join(map(str, result)) + "\n")
