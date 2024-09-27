@@ -16,6 +16,7 @@ for i in range(t):
         break
     elif abs(a) == 1:
         heapq.heappush(heap,a)
+        break
     else:
         a = -(abs(a)//2)
         heapq.heappush(heap,a) 
