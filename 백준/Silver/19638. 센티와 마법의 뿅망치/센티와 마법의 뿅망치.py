@@ -1,31 +1,34 @@
 import sys
 import heapq
 
-n, h, t = map(int,sys.stdin.readline().split())
+input = sys.stdin.readline
+
+n, h, t = map(int, input().split())
+heights = []
 count = 0
 
-heap = []
+# 거인들의 키 입력받기
 for _ in range(n):
-    heapq.heappush(heap,-int(sys.stdin.readline())) 
+    heapq.heappush(heights, -int(input()))  # 음수로 저장하여 최소 힙 사용
 
-
-for i in range(t):
-    a = heapq.heappop(heap)
-    if abs(a) < h:
-        heapq.heappush(heap,a) 
+for j in range(t):
+    max_height = -heapq.heappop(heights)  # 최대 키를 가져오기
+    if max_height < h:
+        print("YES")
+        print(count)  # 사용한 횟수
         break
-    elif abs(a) == 1:
-        heapq.heappush(heap,a)
+    elif max_height == 1:
+        print("NO")
+        print(1)  # 남은 횟수
         break
     else:
-        a = -(abs(a)//2)
-        heapq.heappush(heap,a) 
-        count+=1
-
-
-if abs(min(heap)) < h:
-    print('YES')
-    print(count)
+        heapq.heappush(heights, -(max_height // 2))  # 키를 절반으로 줄이기
+        count += 1
 else:
-    print('NO')
-    print(abs(heapq.heappop(heap)))
+    max_height = -heapq.heappop(heights)  # 가장 큰 거인의 키 가져오기
+    if max_height < h:
+        print("YES")
+        print(count)
+    else:
+        print("NO")
+        print(max_height)  # 가장 큰 거인의 키 출력
