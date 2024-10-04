@@ -1,13 +1,11 @@
-n, act = map(int, input().split())  
+n, k = map(int, input().split())
+experiences = list(map(int, input().split()))
+experiences.sort()
 
-k = list(map(int, input().split()))  
-k.sort()  
+answer = 0
+for i in range(k):
+    answer += experiences[i] * i
+for j in range(k, n):
+    answer += experiences[j] * k
 
-cnt, exp = 0, 0  
-
-for i in range(n):
-    if cnt < act:
-        cnt += 1  
-        exp -= k[i] 
-    exp += k[i] * cnt  
-print(exp)  
+print(answer)
