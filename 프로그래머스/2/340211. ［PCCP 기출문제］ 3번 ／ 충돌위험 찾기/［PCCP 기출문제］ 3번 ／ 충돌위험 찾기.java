@@ -2,75 +2,73 @@ import java.util.*;
 
 class Solution {
     private Map<Integer, Map<String, Integer>> timeLineMap = new HashMap<>();
-    private int time;
-   
+
     public int solution(int[][] points, int[][] routes) {
-        int totalDangerCount = 0;
-        int targetPointCount = routes[0].length;
-        
         for (int[] route : routes) {
-             time = 0;
-             int count = 0;
-             for (int i = 0; i < targetPointCount - 1; i++) {
-                int[] startPoint = points[route[i] - 1];
-                int[] endPoint = points[route[i + 1] - 1];
-
-                int sx = startPoint[0], sy = startPoint[1];
-                int ex = endPoint[0], ey = endPoint[1];
-
-                move(count, sx, sy, ex, ey);
-                count ++;
-            }
+            Robot robot = new Robot(points, route, timeLineMap);
+            robot.moveAll();
         }
 
-        return getDangerCount();
+        return getTotalDangerCount();
     }
 
-    private void move(int count, int sx, int sy, int ex, int ey) {
-        if(count == 0) {
-            Map<String, Integer> positionMap = timeLineMap
-                .computeIfAbsent(time, k -> new HashMap<>());
-            String position = sx + "," + sy;
-            positionMap.put(position, positionMap.getOrDefault(position, 0) + 1);
-            time++;
-        }
-        
-        int xMoveCount = Math.abs(ex - sx);
-        int xDirection = Integer.compare(ex, sx);
+    private int getTotalDangerCount() {
+        return (int) timeLineMap.values().stream()
+            .flatMap(positionMap -> positionMap.values().stream())
+            .filter(dangerCount -> dangerCount > 1)
+            .count();
+    }
+}
 
-        for (int i = 0; i < xMoveCount; i++) {
-            sx += xDirection;
-            Map<String, Integer> posMap = timeLineMap
-                .computeIfAbsent(time, k -> new HashMap<>());
-            String pos = sx + "," + sy;
-            posMap.put(pos, posMap.getOrDefault(pos, 0) + 1);
-            time++;
-        }
+class Robot {
+    private int timestamp = 0;
+    private int x, y;
+    private int[][] points;
+    private int[] route;
+    private Map<Integer, Map<String, Integer>> timeLineMap;
 
-        int yMoveCount = Math.abs(ey - sy);
-        int yDirection = Integer.compare(ey, sy); 
+    public Robot(int[][] points, int[] route, Map<Integer, Map<String, Integer>> timeLineMap) {
+        this.points = points;
+        this.route = route;
+        this.timeLineMap = timeLineMap;
+    }
 
-        for (int i = 0; i < yMoveCount; i++) {
-            sy += yDirection;
-            Map<String, Integer> posMap = timeLineMap
-                .computeIfAbsent(time, k -> new HashMap<>());
-            String pos = sx + "," + sy;
-            posMap.put(pos, posMap.getOrDefault(pos, 0) + 1);
-            time++;
+    public void moveAll() {
+        for (int i = 0; i < route.length - 1; i++) {
+            int[] start = points[route[i] - 1];
+            int[] end = points[route[i + 1] - 1];
+            move(start, end, i == 0);
         }
     }
 
-    private int getDangerCount() {
-        int dangerCount = 0;
+    private void move(int[] start, int[] end, boolean isFirst) {
+        int sx = start[0], sy = start[1];
+        int ex = end[0], ey = end[1];
 
-        for (Map<String, Integer> positionMap : timeLineMap.values()) {
-            for (Map.Entry<String, Integer> entry : positionMap.entrySet()) {
-                if (entry.getValue() > 1) {
-                    dangerCount++;
-                }
-            }
+        if (isFirst) {
+            this.x = sx;
+            this.y = sy;
+            recordPosition();
         }
 
-        return dangerCount;
+        int dx = Integer.compare(ex, sx);
+        while (x != ex) {
+            x += dx;
+            recordPosition();
+        }
+
+        int dy = Integer.compare(ey, sy);
+        while (y != ey) {
+            y += dy;
+            recordPosition();
+        }
+    }
+
+    private void recordPosition() {
+        String pos = x + "," + y;
+        timeLineMap
+            .computeIfAbsent(timestamp, k -> new HashMap<>())
+            .merge(pos, 1, Integer::sum);
+        timestamp++;
     }
 }
