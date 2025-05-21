@@ -3,29 +3,31 @@ import java.util.*;
 class Solution {
     public int solution(int[] priorities, int location) {
         int answer = 1;
-        Queue<int[]> queue = new LinkedList<>();
+        
         PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Collections.reverseOrder());
-
-        for (int i = 0; i < priorities.length; i++) {
+        Deque<int[]> queue = new ArrayDeque<>();
+        
+        for(int i=0; i<priorities.length; i++) {
             queue.offer(new int[]{i, priorities[i]});
             priorityQueue.offer(priorities[i]);
         }
         
-        while(!queue.isEmpty()) {
-            int[] current = queue.poll();
+        while(!priorityQueue.isEmpty()) {
+            int[] info = queue.poll();
             
-            if(current[1] == priorityQueue.peek()){
-                if (current[0] == location) {
+            if(info[1] == priorityQueue.peek()) {
+                if(info[0] == location) {
                     return answer;
-                } 
-                priorityQueue.poll();
-                answer++;
+                } else {
+                    answer += 1;
+                    priorityQueue.poll();
+                }
             } else {
-                queue.offer(current);
+                queue.offer(info);
             }
             
         }
-
-        return -1;
+        
+        return answer;
     }
 }
