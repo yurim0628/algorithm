@@ -2,26 +2,15 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] nums) {
-        int answer = 0;
-        int numLength = nums.length/2;
-        int numLength2 = 0;
-            
-        Set<Integer> nums2 = new HashSet<>();
-        
+        int count = nums.length / 2;
+        Set<Integer> numSet = new HashSet<>();
         for(int num : nums) {
-            nums2.add(num);
+            numSet.add(num);
         }
-        numLength2 = nums2.size();
-        
-        if(numLength2 >= numLength) {
-            answer = numLength;
+        if (numSet.size() >= count) {
+            return count;
         } else {
-            answer = numLength2;
+            return numSet.size();
         }
-        
-       
-        
-        
-        return answer;
     }
 }
